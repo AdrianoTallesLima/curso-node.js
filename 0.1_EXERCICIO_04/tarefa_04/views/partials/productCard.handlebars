@@ -1,0 +1,13 @@
+<div class="card">
+    <h2>{{name}}</h2>
+    <p>Preço: R$ {{price}}</p>
+
+    {{#if premium}}
+        <p  style="color: gold;">🔥 Produto em Promoção</p>
+    {{else}}
+        <p>Produto comum</p>
+    {{/if}}
+
+    <a href="/product/{{id}}">Ver detalhes</a>
+    
+</div>

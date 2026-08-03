@@ -1,0 +1,21 @@
+<h1>Olá handlebars!!</h1>
+{{#if approved}}
+    <p>
+        Parabens, voce foi aprovado pelo sistema!
+    </p>
+
+{{else}}
+    <p>
+        Voce ainda nao foi aprovado, tente novamente mais tarde!
+    </p>
+
+{{/if}}
+
+
+
+<p>O nome do usuario é {{user.name}} {{user.surname}} e ele tem {{user.age}} anos</p>
+{{#if auth }}
+    <p>
+        Voce está autenticado <a href="/dashboard">clique aqui</a> para ir para a area de membros!
+    </p>
+{{/if}}

@@ -1,0 +1,29 @@
+const express = require("express")
+const exphbs = require("express-handlebars")
+
+const app = express()
+
+app.engine('handlebars', exphbs.engine())
+app.set('view engine', 'handlebars')
+
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard')
+})
+
+//da forma abaixo é possivel interpolar valores de bckend no front
+app.get('/', (req, res) => {
+    const user = {
+        name: 'Adriano',
+        surname: "Talles",
+        age: "37"
+    }
+
+    const palavra = 'TESTE'
+
+    const auth = true
+    res.render('home', {user: user, palavra, auth}) //a variavel so fica disponivel no front se colocar ela aqui
+})
+
+app.listen(3000, () => {
+    console.log('App funcionando')
+})

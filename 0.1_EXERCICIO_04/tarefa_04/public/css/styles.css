@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #bf56d4;
+  padding: 80px;
+}
+
+h1 {
+  color: #4ceb57;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  background: rgb(232, 167, 217);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(250, 3, 3, 0.1);
+  width: 200px;
+}
+
+a {
+  display: inline-block;
+  margin-top: 10px;
+  color: rgb(235, 235, 240);
+  text-decoration: none;
+}
+
+.premium {
+  color: rgb(234, 249, 253);
+  font-weight: bold;
+}
+
+.normal {
+  color: rgb(7, 59, 110);
+}
