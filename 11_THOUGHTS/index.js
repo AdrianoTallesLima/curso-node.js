@@ -8,6 +8,16 @@ const app = express()
 
 const conn = require('./db/conn')
 
+//Models
+const Thought = require('./models/Thought')
+const User = require('./models/User')
+
+// Import Routes
+const toughtsRoutes = require('./routes/thoughtsRoutes')
+
+// Import Controller
+const ThoughtController = require('./controllers/ThoughtController')
+
 //template engine
 app.engine('handlebars', exphbs.engine())
 app.set('view engine', 'handlebars')
@@ -54,10 +64,16 @@ app.use((req, res, next) => {
     }
 
     next()
-
 })
 
+//Routes
+app.use('/thoughts', toughtsRoutes)
+
+app.get('/', ThoughtController.showThoughts)
+
 conn
+    
+    // .sync({ force: true })
     .sync()
     .then(() => {
         app.listen(3000)
