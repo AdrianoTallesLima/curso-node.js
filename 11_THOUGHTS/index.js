@@ -75,10 +75,9 @@ app.get('/', ThoughtController.showThoughts)
 
 conn
     
-    // .sync({ force: true })
+    //.sync({ force: true })
     .sync()
     .then(() => {
         app.listen(3000)
     })
     .catch((err) => console.log(err))
-    
