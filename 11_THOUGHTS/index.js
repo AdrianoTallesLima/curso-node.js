@@ -13,7 +13,7 @@ const Thought = require('./models/Thought')
 const User = require('./models/User')
 
 // Import Routes
-const toughtsRoutes = require('./routes/thoughtsRoutes')
+const thoughtsRoutes = require('./routes/thoughtsRoutes')
 const authRoutes = require('./routes/authRoutes')
 
 // Import Controller
@@ -68,7 +68,7 @@ app.use((req, res, next) => {
 })
 
 //Routes
-app.use('/thoughts', toughtsRoutes)
+app.use('/thoughts', thoughtsRoutes)
 app.use('/', authRoutes)
 app.get('/', ThoughtController.showThoughts)
 
