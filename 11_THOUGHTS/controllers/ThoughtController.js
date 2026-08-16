@@ -1,5 +1,6 @@
 const Thought = require('../models/Thought')
 const User = require('../models/User')
+const Like = require('../models/Like')
 
 const { Op } = require('sequelize')
 
@@ -7,31 +8,47 @@ module.exports = class ThoughtController {
   static async showThoughts(req, res) {
     let search = ''
 
-    if(req.query.search) {
+    if (req.query.search) {
       search = req.query.search
     }
 
     let order = 'DESC'
 
-    if(req.query.order === 'old') {
+    if (req.query.order === 'old') {
       order = 'ASC'
     } else {
       order = 'DESC'
     }
 
     const thoughtsData = await Thought.findAll({
-      include: User,
+      include: [
+        {
+          model: User
+        },
+        {
+          model: Like
+        }
+      ],
       where: {
         title: { [Op.like]: `%${search}%` }
       },
       order: [['createdAt', order]],
     })
 
-    const thoughts = thoughtsData.map((result) => result.get({plain: true}))
+    const thoughts = thoughtsData.map((result) => {
+
+      const thought = result.get({ plain: true })
+
+      thought.liked = thought.Likes.some(
+        (like) => like.UserId === req.session.userid
+      )
+
+      return thought
+    })
 
     let thoughtsQty = thoughts.length
 
-    if(thoughtsQty === 0) {
+    if (thoughtsQty === 0) {
       thoughtsQty = false
     }
 
@@ -81,11 +98,11 @@ module.exports = class ThoughtController {
       req.flash('message', 'Pensamento criado com sucesso!')
 
       req.session.save(() => {
-       res.redirect('/thoughts/dashboard')
+        res.redirect('/thoughts/dashboard')
       })
     } catch (error) {
       console.log('Houve um erro:' + error)
-    }    
+    }
   }
 
   static async removeThought(req, res) {
@@ -93,12 +110,12 @@ module.exports = class ThoughtController {
     const UserId = req.session.userid
 
     try {
-      await Thought.destroy({where: {id: id, UserId: UserId} })
+      await Thought.destroy({ where: { id: id, UserId: UserId } })
 
       req.flash('message', 'Pensamento removido com sucesso!')
 
       req.session.save(() => {
-       res.redirect('/thoughts/dashboard')
+        res.redirect('/thoughts/dashboard')
       })
     } catch (error) {
       console.log('Houve um erro:' + error)
@@ -108,7 +125,7 @@ module.exports = class ThoughtController {
   static async updateThought(req, res) {
     const id = req.params.id
 
-    const thought = await Thought.findOne({where: {id: id}, raw: true })
+    const thought = await Thought.findOne({ where: { id: id }, raw: true })
 
     res.render('thoughts/edit', { thought })
   }
@@ -125,10 +142,48 @@ module.exports = class ThoughtController {
       req.flash('message', 'Pensamento atualizado com sucesso!')
 
       req.session.save(() => {
-       res.redirect('/thoughts/dashboard')
+        res.redirect('/thoughts/dashboard')
       })
     } catch (error) {
       console.log('Houve um erro:' + error)
+    }
+  }
+
+  static async likeThought(req, res) {
+
+    const UserId = req.session.userid
+    const ThoughtId = req.body.thoughtId
+
+    try {
+
+      const like = await Like.findOne({
+        where: {
+          UserId: UserId,
+          ThoughtId: ThoughtId
+        }
+      })
+
+      if (like) {
+
+        await Like.destroy({
+          where: {
+            UserId: UserId,
+            ThoughtId: ThoughtId
+          }
+        })
+
+      } else {
+
+        await Like.create({
+          UserId: UserId,
+          ThoughtId: ThoughtId
+        })
+      }
+
+      res.redirect('/')
+
+    } catch (error) {
+      console.log('Houve um erro: ' + error)
     }
   }
 }
